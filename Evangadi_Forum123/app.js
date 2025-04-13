@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 5000;
 const userRoute = require('./routes/userRoute');
+const questionRoute = require('./routes/questionRoute');
+const authMiddleware = require('./middleware/authMiddleware');
 
 //json middleware extract
 app.use(express.json());
@@ -9,7 +11,7 @@ app.use(express.json());
 
 //user route middleware
 app.use('/api/user', userRoute);
-
+app.use('/api/question',authMiddleware, questionRoute);
 //dbConnection middleware
 const db_Connection = require('./db/dbConfig');
 

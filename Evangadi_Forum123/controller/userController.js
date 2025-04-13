@@ -23,7 +23,7 @@ async function  register(req, res) {
         await db_Connection.query("INSERT INTO users(username, firstname,lastname, email, password) VALUES(?,?,?,?,?)",[username, firstname,lastname, email, hashedPassword]);
         return res.status(StatusCodes.CREATED).json({ message: 'User created successfully' });
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
 }
@@ -49,6 +49,7 @@ async function  login(req, res) {
         const userid = user[0].userid;
         const token = jwt.sign({ username, userid}, "secret", {expiresIn : '1h'})
 
+
         return res.status(StatusCodes.OK).json({msg: "user login succesfully", token})
 
         return res.json({ user : user[0].password});
@@ -59,6 +60,9 @@ async function  login(req, res) {
 
 }
 async function  checkUser(req, res) {
-    res.send('register user');
+    const username = req.user.username
+    const userid = req.user.userid
+
+    res.status(StatusCodes.OK).json({ msg: "user is authenticated", username, userid })
 }
-module.exports = { register, login, checkUser }; // export the functions
+module.exports = { register, login, checkUser };
