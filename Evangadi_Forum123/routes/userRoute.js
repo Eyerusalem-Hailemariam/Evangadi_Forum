@@ -7,6 +7,6 @@ const { register, login, checkUser } = require('../controller/userController');
 router.post('/register', register);
 router.post('/login', login);
 //check user
-router.get('check', checkUser);
+router.get('/check', checkUser);
 
 module.exports = router; // export the router

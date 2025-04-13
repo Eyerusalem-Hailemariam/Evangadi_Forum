@@ -1,6 +1,7 @@
 const db_Connection = require('../db/dbConfig');
 const bcrypt = require('bcrypt');
 const StatusCodes = require('http-status-codes').StatusCodes;
+const jwt = require('jsonwebtoken');
 
 async function  register(req, res) {
     const {username, firstname, lastname, email, password } =req.body;
@@ -27,7 +28,35 @@ async function  register(req, res) {
     }
 }
 async function  login(req, res) {
-    res.send('register user');
+    const {email, password} = req.body;
+    if (!email || !password) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'All fields are required' });
+    }
+
+    try {
+
+        const [user] = await db_Connection.query('select * from users where email = ?', [email]);
+        if (user.length === 0) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+        const isMatch = await bcrypt.compare(password, user[0].password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        const username = user[0].username;
+        const userid = user[0].userid;
+        const token = jwt.sign({ username, userid}, "secret", {expiresIn : '1h'})
+
+        return res.status(StatusCodes.OK).json({msg: "user login succesfully", token})
+
+        return res.json({ user : user[0].password});
+    } catch(err) {
+        console.log(err);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+    }
+
 }
 async function  checkUser(req, res) {
     res.send('register user');
