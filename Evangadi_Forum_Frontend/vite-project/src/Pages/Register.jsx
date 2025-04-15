@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRef } from 'react'
 import axios from '../axiosConfig'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Register() {
 
@@ -68,6 +68,7 @@ function Register() {
 
         <button type="submit">Register</button>
         </form>
+        <Link to="/login">Already have an account? Login</Link>
       </section>
     </div>
   )
