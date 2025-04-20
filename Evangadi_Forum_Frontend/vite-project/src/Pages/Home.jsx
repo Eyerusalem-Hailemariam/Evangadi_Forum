@@ -1,40 +1,42 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppState } from '../App'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link} from 'react-router-dom'
 import axios from '../axiosConfig'
 
 function Home() {
   const navigate = useNavigate()
-  const {user} = useContext(AppState)
-  console.log(user)
-  const [question, setofQuestion] = React.useState([])
+  const { user } = useContext(AppState)
+  const [questions, setQuestions] = useState([])
 
-  function handleAskHandle(e){
+  function handleAskHandle() {
     navigate('/ask')
-
   }
-  useEffect(()=>{
-    async function fetchQuetions() {
+
+  useEffect(() => {
+    async function fetchQuestions() {
       try {
         const response = await axios.get('/question/all-questions', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-        });  
-        const  data  = response.data;
-      const sorted = data.sort((a, b) => {
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      }
-      )
-      setofQuestion(sorted)
-      console.log(setofQuestion)
-    } catch (error) {
-        console.error('Error fetching questions:', error);
-      }
-  }
-    fetchQuetions();
+        })
 
-  }, []);
+        const sorted = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+
+        setQuestions(sorted)
+
+        sorted.forEach((item) => {
+          console.log("question id", item.questionid);
+        })
+      } catch (error) {
+        console.error('Error fetching questions:', error)
+      }
+    }
+
+    fetchQuestions()
+  }, [])
 
   function handleQuestionClick(id) {
     navigate(`/question/${id}`)
@@ -42,24 +44,33 @@ function Home() {
 
   return (
     <div>
-      <h1>Welcome : {user.username}</h1>
+      <h1>Welcome : {user?.username}</h1>
+
       <section>
-          <button onClick={handleAskHandle}>Ask a Question</button>
+        <button onClick={handleAskHandle}>Ask a Question</button>
       </section>
 
       <section>
         <h2>Questions</h2>
         <ul>
-          {question.map((item, index)=> (
-            <li key={item.id || index} onClick={() => handleQuestionClick(item.id)} style = {{cursor: "pointer", margin: "10px", padding: "10px", border: "1px solid black"}}>
+          {questions.map((item) => (
+            <li
+              key={item.questionid}
+              onClick={() => handleQuestionClick(item.questionid)}
+              style={{
+                cursor: 'pointer',
+                margin: '10px',
+                padding: '10px',
+                border: '1px solid black',
+              }}
+            >
               <strong>{item.title}</strong>
               <p>{item.username}</p>
             </li>
           ))}
         </ul>
-      </section>    
-      </div>
-
+      </section>
+    </div>
   )
 }
 

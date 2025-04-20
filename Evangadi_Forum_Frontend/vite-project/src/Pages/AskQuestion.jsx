@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppState } from '../App';
 
 function AskQuestion() {
@@ -37,6 +37,7 @@ function AskQuestion() {
   
   return (
     <div style={{ padding: '20px' }}>
+      <Link to="/">Back to Home</Link>
       <h1>Ask a Question</h1>
       <h3>Follow these steps to write a good question:</h3>
       <ul>

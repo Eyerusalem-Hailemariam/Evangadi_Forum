@@ -43,6 +43,7 @@ function Register() {
 
   return (
     <div>
+        <Link to="/">Back to Home</Link>
       <section>
         <form onSubmit={handleSubmit}>
         <div>

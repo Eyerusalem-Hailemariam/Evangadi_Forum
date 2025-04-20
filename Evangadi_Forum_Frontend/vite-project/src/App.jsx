@@ -5,8 +5,9 @@ import Register from "./Pages/Register"
 import {Routes, Route, useNavigate} from "react-router-dom"
 import axios from "./axiosConfig"
 import AskQuestion from "./Pages/AskQuestion"
+import Questions from "./component/Questions"
 
-// ... other imports
+
 export const AppState = createContext();
 
 function App() {
@@ -55,13 +56,37 @@ function App() {
     }
   };
 
+  const answerQuestion = async (answer, questionid) => {
+    try {
+      const { data } = await axios.post(
+        '/answer/add',
+        {
+          userid: user.userid,
+          answer,
+          questionid,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      console.log("data", data);
+      return data;
+    } catch (error) {
+      console.error('Failed to post answer:', error.response);
+      throw error;
+    }
+  }
   return (
-    <AppState.Provider value={{ user, setUser, askQuestion }}>
+    <AppState.Provider value={{ user, setUser, askQuestion, answerQuestion }}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/ask" element={<AskQuestion />} />
+        <Route path="/question/:id" element={<Questions />} />
+        
       </Routes>
     </AppState.Provider>
   );

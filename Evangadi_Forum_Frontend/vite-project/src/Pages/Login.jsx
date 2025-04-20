@@ -38,6 +38,7 @@ function Login() {
 
   return (
     <section>
+        <Link to="/">Back to Home</Link>
      <form onSubmit={handleSubmit}>
         <div>
             <span>email </span>
