@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppState } from '../App'
-import { useNavigate, Link} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from '../axiosConfig'
 
 function Home() {
   const navigate = useNavigate()
   const { user } = useContext(AppState)
   const [questions, setQuestions] = useState([])
-
-  function handleAskHandle() {
-    navigate('/ask')
-  }
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -26,10 +22,6 @@ function Home() {
         )
 
         setQuestions(sorted)
-
-        sorted.forEach((item) => {
-          console.log("question id", item.questionid);
-        })
       } catch (error) {
         console.error('Error fetching questions:', error)
       }
@@ -38,38 +30,45 @@ function Home() {
     fetchQuestions()
   }, [])
 
-  function handleQuestionClick(id) {
-    navigate(`/question/${id}`)
-  }
+  const handleAskHandle = () => navigate('/ask')
+  const handleQuestionClick = (id) => navigate(`/question/${id}`)
 
   return (
-    <div>
-      <h1>Welcome : {user?.username}</h1>
+    <div className="min-h-screen bg-gray-100 px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Welcome Banner */}
+        <div className="mb-6 text-center">
+          <h1 className="text-4xl font-bold text-blue-700">Welcome, {user?.username}!</h1>
+          <p className="text-gray-600 mt-2">Explore community questions or ask your own</p>
+        </div>
 
-      <section>
-        <button onClick={handleAskHandle}>Ask a Question</button>
-      </section>
+        {/* Ask Button */}
+        <div className="flex justify-center mb-8">
+          <button
+            onClick={handleAskHandle}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition"
+          >
+            Ask a Question
+          </button>
+        </div>
 
-      <section>
-        <h2>Questions</h2>
-        <ul>
-          {questions.map((item) => (
-            <li
-              key={item.questionid}
-              onClick={() => handleQuestionClick(item.questionid)}
-              style={{
-                cursor: 'pointer',
-                margin: '10px',
-                padding: '10px',
-                border: '1px solid black',
-              }}
-            >
-              <strong>{item.title}</strong>
-              <p>{item.username}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+        {/* Questions List */}
+        <section>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Recent Questions</h2>
+          <ul className="grid gap-4">
+            {questions.map((item) => (
+              <li
+                key={item.questionid}
+                onClick={() => handleQuestionClick(item.questionid)}
+                className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer border border-gray-200"
+              >
+                <h3 className="text-xl font-medium text-blue-700">{item.title}</h3>
+                <p className="text-gray-500 text-sm mt-1">Posted by: {item.username}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   )
 }

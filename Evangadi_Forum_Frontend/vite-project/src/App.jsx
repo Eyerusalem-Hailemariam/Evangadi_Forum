@@ -1,3 +1,4 @@
+import React from "react"
 import { useEffect, useState, createContext } from "react"
 import Home from "./Pages/Home"
 import Login from "./Pages/Login"
