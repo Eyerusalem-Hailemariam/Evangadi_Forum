@@ -1,3 +1,4 @@
+//controller/questionController.js
 const db_Connection = require('../db/dbConfig');
 const bcrypt = require('bcrypt');
 const StatusCodes = require('http-status-codes').StatusCodes;
@@ -30,4 +31,25 @@ async function getAllQuestion(req, res) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     }
 }
-module.exports = {addQuestion, getAllQuestion};
+
+
+async function getQuestionById(req, res) {
+    const { id } = req.params; 
+    console.log(id)
+    try {
+        const [question] = await db_Connection.query("SELECT * FROM question WHERE questionid = ?", [id]);
+
+if (question.length === 0) {
+  return res.status(404).json({ message: "Question not found" });
+}
+return res.status(200).json(question[0]);
+;
+    } catch (err) {
+        console.log(err.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+    }
+}
+
+
+
+module.exports = {addQuestion, getAllQuestion, getQuestionById};
